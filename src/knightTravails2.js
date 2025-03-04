@@ -20,6 +20,28 @@ class Graph {
     });
     console.log(graph);
   }
+
+  levelOrder(callback) {
+    let node = this.nodes;
+    let visited = {};
+    let queue = [node[0]];
+
+    while (queue.length > 0) {
+      let currNode = queue[0];
+      if (currNode === undefined) break;
+      let currEdges = this.edges[currNode];
+
+      callback(currNode);
+
+      currEdges.forEach((edge) => {
+        if (visited[edge] !== true) {
+          queue.push(edge);
+          visited[edge] = true;
+        }
+      });
+      queue.shift();
+    }
+  }
 }
 
 const test = new Graph();
@@ -34,10 +56,8 @@ function createVertices() {
 createVertices();
 
 test.nodes.forEach((node) => {
-  isAdjacent(node);
+  createEdges(node);
 });
-
-test.display();
 
 function isInBounds(cords) {
   if (cords[0] >= 0 && cords[0] <= 7 && cords[1] >= 0 && cords[1] <= 7) {
@@ -45,7 +65,7 @@ function isInBounds(cords) {
   } else return false;
 }
 
-function isAdjacent(cords) {
+function createEdges(cords) {
   let allMoves = [
     [cords[0] + 2, cords[1] + 1],
     [cords[0] + 1, cords[1] + 2],
@@ -64,7 +84,8 @@ function isAdjacent(cords) {
   });
 }
 
-console.log(test.nodes);
-console.log(test.edges);
-
 test.display();
+
+// console.log(test.edges);
+// console.log(test.nodes);
+test.levelOrder();
