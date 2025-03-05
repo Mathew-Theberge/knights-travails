@@ -25,6 +25,7 @@ class Graph {
     let node = this.nodes;
     let visited = {};
     let queue = [node[0]];
+    let paths = [];
 
     while (queue.length > 0) {
       let currNode = queue[0];
@@ -34,13 +35,61 @@ class Graph {
       callback(currNode);
 
       currEdges.forEach((edge) => {
+        paths.push([]);
         if (visited[edge] !== true) {
           queue.push(edge);
           visited[edge] = true;
-        }
+        } else console.log(`back edge ${edge}`);
       });
       queue.shift();
     }
+    console.log(paths);
+  }
+
+  knightMoves(start, end) {
+    let visited = {};
+    visited[start] = true;
+    let currLayer = [start];
+    let nextLayer = [];
+    let path;
+
+    while (currLayer.length > 0) {
+      for (let node of currLayer) {
+        if (arraysEqual(node, end)) {
+          let edges = this.edges[node];
+          let prevEdge = null;
+          for (let edge of edges) {
+            if (visited[edge] === true) {
+              prevEdge = edge;
+            }
+          }
+          path = prevEdge;
+        }
+
+        let currEdges = this.edges[node];
+
+        currEdges.forEach((edge) => {
+          if (visited[edge] !== true) {
+            nextLayer.push(edge);
+            visited[edge] = true;
+          }
+        });
+      }
+      currLayer = nextLayer;
+      nextLayer = [];
+    }
+    return path;
+  }
+
+  knightMoves2(start, end) {
+    let node = this.knightMoves(start, end);
+    let mainPath = [];
+    mainPath.unshift(node);
+    while (!arraysEqual(mainPath[0], start)) {
+      let path = this.knightMoves(start, mainPath[0]);
+      mainPath.unshift(path);
+    }
+    return mainPath;
   }
 }
 
@@ -84,8 +133,15 @@ function createEdges(cords) {
   });
 }
 
-test.display();
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length !== b.length) return false;
 
-// console.log(test.edges);
-// console.log(test.nodes);
-test.levelOrder();
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+}
+
+console.log(test.knightMoves([3, 3], [4, 3]));
