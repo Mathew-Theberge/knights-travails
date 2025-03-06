@@ -79,7 +79,8 @@ function knightMoves(start, end) {
   } else if (start.toString() === end.toString()) {
     return [start.toString()];
   }
-  let fullPath = [end.toString()];
+  let fullPath = [[end.toString()]];
+
   let prevMove = [findPrevMove(start, end)];
 
   while (prevMove.toString() !== start.toString()) {
@@ -87,7 +88,8 @@ function knightMoves(start, end) {
     prevMove = [findPrevMove(start, prevMove)];
   }
   fullPath.unshift([start.toString()]);
-  return fullPath;
+  console.log(`you made it in ${fullPath.length - 1} moves! Here is your path`);
+  console.table(fullPath);
 }
 
-console.log(knightMoves([4, 1], [7, 5]));
+knightMoves([0, 0], [7, 7]);
